@@ -279,78 +279,36 @@ body {
     min-height: 22px;
 }
 
-/* QUINTA PÁGINA - REGRAS E INFORMAÇÕES */
+/* QUINTA PÁGINA - IMAGEM DAS REGRAS */
 
 #regras {
     display: none;
     position: fixed;
     inset: 0;
     width: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    background: #484848;
+    height: 100vh;
+    height: 100dvh;
+    background: #303030;
     flex-direction: column;
     align-items: center;
-    padding: 35px 20px 45px;
-    gap: 28px;
+    justify-content: center;
+    padding: 20px;
+    gap: 15px;
     overflow-y: auto;
 }
 
-.titulo-regras {
-    font-family: Georgia, serif;
-    font-size: clamp(28px, 5vw, 55px);
-    font-weight: normal;
-    letter-spacing: 2px;
-    text-align: center;
-    color: #a9823f;
-    text-shadow: 1px 1px 1px #e0c17c,
-                 2px 3px 3px #292014;
-    margin-top: 10px;
-}
-
-.conteudo-regras {
-    width: min(750px, 95%);
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.bloco-regra {
-    width: 100%;
-    padding: 22px 25px;
-    background: rgba(0, 0, 0, 0.12);
-    border-left: 3px solid #a9823f;
-}
-
-.categoria-regra {
-    font-family: Georgia, serif;
-    font-size: clamp(19px, 3vw, 25px);
-    font-weight: normal;
-    letter-spacing: 1px;
-    color: #a9823f;
-    text-shadow: 1px 1px 1px #e0c17c,
-                 1px 2px 2px #292014;
-    margin-bottom: 16px;
-}
-
-.informacao-regra {
-    font-family: Arial, sans-serif;
-    color: #e4cfaa;
-    font-size: 15px;
-    line-height: 1.8;
-    letter-spacing: 0.2px;
-}
-
-.informacao-regra p {
-    margin-bottom: 10px;
-}
-
-.informacao-regra p:last-child {
-    margin-bottom: 0;
+#imagemRegras {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 115px);
+    object-fit: contain;
 }
 
 #regras .botao-menu {
     width: min(300px, 85%);
+    min-height: 55px;
     flex-shrink: 0;
 }
 
@@ -387,25 +345,13 @@ body {
     }
 
     #regras {
-        padding: 25px 12px 35px;
-        gap: 22px;
+        padding: 12px;
+        gap: 12px;
     }
 
-    .titulo-regras {
-        font-size: clamp(24px, 7vw, 34px);
-    }
-
-    .bloco-regra {
-        padding: 18px 16px;
-    }
-
-    .categoria-regra {
-        font-size: 20px;
-    }
-
-    .informacao-regra {
-        font-size: 14px;
-        line-height: 1.7;
+    #imagemRegras {
+        max-width: 100%;
+        max-height: calc(100dvh - 85px);
     }
 }
 </style>
@@ -477,9 +423,9 @@ body {
         </button>
 
         <button class="botao-menu"
-    onclick="abrirRegras()">
-    REGRAS E INFORMAÇÕES
-</button>
+            onclick="abrirRegras()">
+            REGRAS E INFORMAÇÕES
+        </button>
 
         <button class="botao-menu"
             onclick="abrirInvestigadores()">
@@ -524,88 +470,15 @@ body {
 
 </section>
 
-<!-- QUINTA PÁGINA -->
+<!-- QUINTA PÁGINA - IMAGEM -->
 
 <section id="regras">
 
-    <div class="linha"></div>
-
-    <h1 class="titulo-regras">
-        REGRAS E INFORMAÇÕES
-    </h1>
-
-    <div class="linha"></div>
-
-    <div class="conteudo-regras">
-
-        <!-- PARTICIPAÇÃO -->
-
-        <div class="bloco-regra">
-
-            <h2 class="categoria-regra">
-                ℙ𝔸ℝ𝕋𝕀ℂ𝕀ℙ𝔸ℂ̧𝔸̃𝕆
-            </h2>
-
-            <div class="informacao-regra">
-                <p>• A participação é aberta a todos.</p>
-                <p>• Cada participante pode convidar até duas pessoas.</p>
-                <p>• A formação de grupos é permitida.</p>
-                <p>• Mesmo em grupos, as recompensas serão individuais e separadas para cada participante.</p>
-            </div>
-
-        </div>
-
-        <!-- INVESTIGAÇÃO -->
-
-        <div class="bloco-regra">
-
-            <h2 class="categoria-regra">
-                𝕀ℕ𝕍𝔼𝕊𝕋𝕀𝔾𝔸ℂ̧𝔸̃𝕆
-            </h2>
-
-            <div class="informacao-regra">
-                <p>• As tentativas de investigação são limitadas.</p>
-                <p>• Será permitido realizar uma tentativa a cada 30 minutos.</p>
-                <p>• Não serão fornecidas dicas, exceto em casos extremos, a critério da organização.</p>
-                <p>• É proibido acessar arquivos, códigos ou recursos internos do site para obter informações que não estejam disponíveis aos participantes.</p>
-            </div>
-
-        </div>
-
-        <!-- PONTUAÇÃO E RECOMPENSAS -->
-
-        <div class="bloco-regra">
-
-            <h2 class="categoria-regra">
-                ℙ𝕆ℕ𝕋𝕌𝔸ℂ̧𝔸̃𝕆 𝔼 ℝ𝔼ℂ𝕆𝕄ℙ𝔼ℕ𝕊𝔸𝕊
-            </h2>
-
-            <div class="informacao-regra">
-                <p>• A pontuação será enviada individualmente por e-mail.</p>
-                <p>• As recompensas serão anunciadas ao final do evento.</p>
-                <p>• Não haverá recompensa em dinheiro por enquanto.</p>
-                <p>• As recompensas serão individuais, mesmo para participantes que investigarem em grupo.</p>
-            </div>
-
-        </div>
-
-        <!-- INFORMAÇÕES GERAIS -->
-
-        <div class="bloco-regra">
-
-            <h2 class="categoria-regra">
-                𝕀ℕ𝔽𝕆ℝ𝕄𝔸ℂ̧𝕆̃𝔼𝕊 𝔾𝔼ℝ𝔸𝕀𝕊
-            </h2>
-
-            <div class="informacao-regra">
-                <p>• A confirmação do cadastro será realizada por e-mail.</p>
-                <p>• Datas e horários importantes serão publicados nesta seção.</p>
-                <p>• Os resultados finais serão anunciados pela organização no Discord.</p>
-            </div>
-
-        </div>
-
-    </div>
+    <img
+        id="imagemRegras"
+        src="./regras.png"
+        alt="Regulamento e informações do Vazio Espacial"
+    >
 
     <button class="botao-menu"
         type="button"
@@ -680,10 +553,12 @@ window.mostrarAviso = function(texto) {
     document.getElementById("avisoMenu").textContent = texto;
 };
 
-/* ABRIR REGRAS */
+/* ABRIR IMAGEM DAS REGRAS */
 
 window.abrirRegras = function() {
+
     mostrarPagina("regras");
+
 };
 
 /* CADASTRO */
