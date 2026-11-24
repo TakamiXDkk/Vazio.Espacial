@@ -20,41 +20,19 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: white;
             font-family: Arial, sans-serif;
+
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
-        }
-
-        .conteudo {
-            background: rgba(0, 0, 0, 0.65);
-            padding: 40px;
-            border-radius: 12px;
-            max-width: 700px;
-            margin: 20px;
-        }
-
-        h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            letter-spacing: 5px;
-        }
-
-        p {
-            font-size: 18px;
-            line-height: 1.6;
         }
 
         button {
-            margin-top: 30px;
-            padding: 16px 32px;
-            background: transparent;
+            padding: 18px 40px;
+            background: rgba(0, 0, 0, 0.65);
             border: 2px solid white;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             letter-spacing: 3px;
             cursor: pointer;
             transition: 0.3s;
@@ -63,34 +41,18 @@
         button:hover {
             background: white;
             color: black;
-            box-shadow: 0 0 20px white;
-        }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 32px;
-            }
-
-            .conteudo {
-                padding: 25px;
-            }
+            box-shadow: 0 0 25px white;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="conteudo">
-        <h1>VAZIO ESPACIAL</h1>
-
-        <p>O universo é muito maior do que imaginamos.</p>
-        <p>E nem tudo que existe deveria ser encontrado.</p>
-
-        <button onclick="alert('Investigação iniciada.')">
-            PROCURAR ANOMALIA
-        </button>
-    </div>
+    <button onclick="alert('Investigação iniciada.')">
+        PROCURAR ANOMALIA
+    </button>
 
 </body>
 </html>
+
 
