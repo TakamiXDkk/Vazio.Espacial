@@ -75,8 +75,6 @@ body {
     overflow-y: auto;
 }
 
-/* TÍTULO DO LOGIN */
-
 .titulo {
     font-family: Georgia, serif;
     font-size: clamp(42px, 7vw, 90px);
@@ -90,16 +88,12 @@ body {
     transform: scaleY(1.25);
 }
 
-/* LINHAS */
-
 .linha {
     width: min(650px, 85%);
     height: 1px;
     flex-shrink: 0;
     background: #a9823f;
 }
-
-/* CAMPOS */
 
 .campos {
     display: flex;
@@ -128,8 +122,6 @@ body {
     border-color: #d0ad65;
 }
 
-/* BOTÃO DE CADASTRO */
-
 #botaoCadastro {
     display: block;
     width: 100%;
@@ -151,8 +143,6 @@ body {
     opacity: 0.6;
     cursor: wait;
 }
-
-/* MENSAGEM */
 
 #mensagem {
     width: min(360px, 90%);
@@ -181,8 +171,6 @@ body {
     overflow-y: auto;
 }
 
-/* TÍTULO DO MENU */
-
 .titulo-menu {
     font-family: Georgia, serif;
     font-size: clamp(35px, 6vw, 76px);
@@ -195,8 +183,6 @@ body {
                  2px 3px 3px #292014;
     transform: scaleY(1.25);
 }
-
-/* BOTÕES DO MENU */
 
 .botoes-menu {
     display: flex;
@@ -263,13 +249,11 @@ body {
 <!-- PRIMEIRA PÁGINA -->
 
 <section id="inicio">
-
     <img src="./fundo.png" alt="Fundo">
 
     <button type="button" onclick="abrirLogin()">
         PROCURAR ANOMALIA
     </button>
-
 </section>
 
 <!-- SEGUNDA PÁGINA -->
@@ -480,38 +464,53 @@ window.cadastrar = async function() {
 
 };
 
-/* IDENTIFICAR RETORNO DO LINK DE CONFIRMAÇÃO */
+/* RETORNO DA CONFIRMAÇÃO */
 
-const parametros = new URLSearchParams(window.location.search);
+async function verificarConfirmacao() {
 
-const veioDeConfirmacao =
-    parametros.has("code") ||
-    window.location.hash.includes("access_token=");
+    const parametros = new URLSearchParams(window.location.search);
 
-/* SÓ ABRIR O MENU AUTOMATICAMENTE APÓS CONFIRMAÇÃO */
+    const veioDeConfirmacao =
+        parametros.has("code") ||
+        window.location.hash.includes("access_token=");
 
-if (veioDeConfirmacao) {
+    /*
+       Espera o Supabase processar o link.
+       Só abre o menu se esta visita veio
+       diretamente da confirmação do e-mail.
+    */
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data, error } = await supabase.auth.getSession();
 
-        if (event === "SIGNED_IN" && session) {
+    if (veioDeConfirmacao) {
 
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+        if (!error && data.session) {
             mostrarPagina("menu");
-
-            window.history.replaceState(
-                {},
-                document.title,
-                window.location.pathname
-            );
-
+        } else {
+            mostrarPagina("login");
         }
 
-    });
+    }
 
 }
+
+/*
+   IMPORTANTE:
+   Não existe redirecionamento automático
+   por sessão ativa ao abrir o site.
+*/
+
+verificarConfirmacao();
 
 </script>
 
 </body>
 </html>
+
 
