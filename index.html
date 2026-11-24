@@ -327,15 +327,18 @@ body {
 
     <div class="botoes-menu">
 
-        <button class="botao-menu" onclick="mostrarAviso('A investigação ainda está sendo preparada.')">
+        <button class="botao-menu"
+            onclick="mostrarAviso('A investigação ainda está sendo preparada.')">
             INVESTIGAR ANOMALIA
         </button>
 
-        <button class="botao-menu" onclick="mostrarAviso('As regras e informações serão disponibilizadas em breve.')">
+        <button class="botao-menu"
+            onclick="mostrarAviso('As regras e informações serão disponibilizadas em breve.')">
             REGRAS E INFORMAÇÕES
         </button>
 
-        <button class="botao-menu" onclick="mostrarAviso('A lista de investigadores será disponibilizada em breve.')">
+        <button class="botao-menu"
+            onclick="mostrarAviso('A lista de investigadores será disponibilizada em breve.')">
             INVESTIGADORES REGISTRADOS
         </button>
 
@@ -364,14 +367,16 @@ const supabase = createClient(
 /* NAVEGAÇÃO */
 
 function mostrarPagina(pagina) {
+
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("menu").style.display = "none";
 
     document.getElementById(pagina).style.display = "flex";
+
 }
 
-/* PRIMEIRA PÁGINA SEMPRE APARECE AO ABRIR */
+/* PRIMEIRA PÁGINA */
 
 window.abrirLogin = async function() {
 
@@ -390,10 +395,12 @@ window.abrirLogin = async function() {
 
 };
 
-/* AVISOS DOS BOTÕES */
+/* AVISOS DO MENU */
 
 window.mostrarAviso = function(texto) {
+
     document.getElementById("avisoMenu").textContent = texto;
+
 };
 
 /* CADASTRO */
@@ -430,6 +437,7 @@ window.cadastrar = async function() {
     try {
 
         const { error } = await supabase.auth.signInWithOtp({
+
             email: email,
 
             options: {
@@ -442,6 +450,7 @@ window.cadastrar = async function() {
 
                 shouldCreateUser: true
             }
+
         });
 
         if (error) {
@@ -471,17 +480,38 @@ window.cadastrar = async function() {
 
 };
 
-/* CONFIRMAÇÃO DO E-MAIL */
+/* IDENTIFICAR RETORNO DO LINK DE CONFIRMAÇÃO */
 
-supabase.auth.onAuthStateChange((event, session) => {
+const parametros = new URLSearchParams(window.location.search);
 
-    if (event === "SIGNED_IN" && session) {
-        mostrarPagina("menu");
-    }
+const veioDeConfirmacao =
+    parametros.has("code") ||
+    window.location.hash.includes("access_token=");
 
-});
+/* SÓ ABRIR O MENU AUTOMATICAMENTE APÓS CONFIRMAÇÃO */
+
+if (veioDeConfirmacao) {
+
+    supabase.auth.onAuthStateChange((event, session) => {
+
+        if (event === "SIGNED_IN" && session) {
+
+            mostrarPagina("menu");
+
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+
+        }
+
+    });
+
+}
 
 </script>
 
 </body>
 </html>
+
