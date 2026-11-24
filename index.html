@@ -70,7 +70,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 35px;
+    gap: 28px;
     padding: 30px 20px;
     overflow-y: auto;
 }
@@ -122,6 +122,18 @@ body {
     border-color: #d0ad65;
 }
 
+#senhaAdmin {
+    border: 2px solid #c19b58;
+    background: #3e3e3e;
+}
+
+#botaoCadastro,
+.botao-voltar,
+.botao-menu {
+    cursor: pointer;
+    letter-spacing: 2px;
+}
+
 #botaoCadastro {
     display: block;
     width: 100%;
@@ -131,8 +143,6 @@ body {
     border: 1px solid #d0ad65;
     color: #17130c;
     font-size: 15px;
-    letter-spacing: 2px;
-    cursor: pointer;
 }
 
 #botaoCadastro:hover {
@@ -142,6 +152,20 @@ body {
 #botaoCadastro:disabled {
     opacity: 0.6;
     cursor: wait;
+}
+
+.botao-voltar {
+    width: min(360px, 90%);
+    min-height: 50px;
+    background: transparent;
+    border: 1px solid #a9823f;
+    color: #e0c17c;
+    font-size: 14px;
+}
+
+.botao-voltar:hover {
+    background: #a9823f;
+    color: #17130c;
 }
 
 #mensagem {
@@ -199,8 +223,6 @@ body {
     border: 1px solid #a9823f;
     color: #e0c17c;
     font-size: 16px;
-    letter-spacing: 2px;
-    cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
 
@@ -216,7 +238,7 @@ body {
     text-align: center;
 }
 
-/* QUARTA PÁGINA - INVESTIGADORES */
+/* QUARTA PÁGINA */
 
 #investigadores {
     display: none;
@@ -273,23 +295,6 @@ body {
     min-height: 22px;
 }
 
-.botao-voltar {
-    width: min(300px, 85%);
-    min-height: 55px;
-    margin-top: 15px;
-    background: transparent;
-    border: 1px solid #a9823f;
-    color: #e0c17c;
-    font-size: 15px;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
-
-.botao-voltar:hover {
-    background: #a9823f;
-    color: #17130c;
-}
-
 /* CELULAR */
 
 @media (max-width: 600px) {
@@ -304,7 +309,7 @@ body {
     }
 
     #login {
-        gap: 28px;
+        gap: 20px;
     }
 
     #menu {
@@ -324,19 +329,12 @@ body {
 
 <body>
 
-<!-- PRIMEIRA PÁGINA -->
-
 <section id="inicio">
-
     <img src="./fundo.png" alt="Fundo">
-
     <button type="button" onclick="abrirLogin()">
         PROCURAR ANOMALIA
     </button>
-
 </section>
-
-<!-- SEGUNDA PÁGINA -->
 
 <section id="login">
 
@@ -348,26 +346,19 @@ body {
 
     <div class="campos">
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Username"
-            maxlength="30"
-            autocomplete="nickname"
-        >
+        <input type="text" id="username"
+            placeholder="Username" maxlength="30"
+            autocomplete="nickname">
 
-        <input
-            type="email"
-            id="email"
-            placeholder="E-mail"
-            autocomplete="email"
-        >
+        <input type="email" id="email"
+            placeholder="E-mail" autocomplete="email">
 
-        <button
-            id="botaoCadastro"
-            type="button"
-            onclick="cadastrar()"
-        >
+        <input type="password" id="senhaAdmin"
+            placeholder="SENHA ADMINISTRATIVA (OPCIONAL)"
+            autocomplete="off">
+
+        <button id="botaoCadastro" type="button"
+            onclick="cadastrar()">
             CADASTRAR
         </button>
 
@@ -375,9 +366,12 @@ body {
 
     <p id="mensagem"></p>
 
-</section>
+    <button class="botao-voltar" type="button"
+        onclick="voltarInicio()">
+        VOLTAR
+    </button>
 
-<!-- TERCEIRA PÁGINA -->
+</section>
 
 <section id="menu">
 
@@ -411,8 +405,6 @@ body {
     <p id="avisoMenu"></p>
 
 </section>
-
-<!-- QUARTA PÁGINA -->
 
 <section id="investigadores">
 
@@ -452,23 +444,17 @@ const supabase = createClient(
     SUPABASE_KEY
 );
 
-/* NAVEGAÇÃO */
+const CHAVE_TEMPORARIA_ADMIN = "vazio_admin_pendente";
 
 function mostrarPagina(pagina) {
-
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("menu").style.display = "none";
     document.getElementById("investigadores").style.display = "none";
-
     document.getElementById(pagina).style.display = "flex";
-
 }
 
-/* PRIMEIRA PÁGINA */
-
 window.abrirLogin = async function() {
-
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
@@ -481,23 +467,22 @@ window.abrirLogin = async function() {
     } else {
         mostrarPagina("login");
     }
-
 };
 
-/* AVISOS DO MENU */
+window.voltarInicio = function() {
+    mostrarPagina("inicio");
+    document.getElementById("mensagem").textContent = "";
+};
 
 window.mostrarAviso = function(texto) {
-
     document.getElementById("avisoMenu").textContent = texto;
-
 };
-
-/* CADASTRO */
 
 window.cadastrar = async function() {
 
     const username = document.getElementById("username").value.trim();
     const email = document.getElementById("email").value.trim();
+    const senhaAdmin = document.getElementById("senhaAdmin").value;
 
     const mensagem = document.getElementById("mensagem");
     const botao = document.getElementById("botaoCadastro");
@@ -525,21 +510,22 @@ window.cadastrar = async function() {
 
     try {
 
+        if (senhaAdmin.trim() !== "") {
+            sessionStorage.setItem(CHAVE_TEMPORARIA_ADMIN, senhaAdmin);
+        } else {
+            sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
+        }
+
         const { error } = await supabase.auth.signInWithOtp({
-
             email: email,
-
             options: {
                 emailRedirectTo:
                     window.location.origin + window.location.pathname,
-
                 data: {
                     username: username
                 },
-
                 shouldCreateUser: true
             }
-
         });
 
         if (error) {
@@ -547,13 +533,15 @@ window.cadastrar = async function() {
         }
 
         mensagem.textContent =
-            "Enviamos um link de confirmação para seu e-mail. Confira sua caixa de entrada.";
+            "Enviamos um link de confirmação para seu e-mail. Abra o link neste mesmo navegador para concluir o cadastro.";
 
         mensagem.style.color = "#e5c98f";
+        document.getElementById("senhaAdmin").value = "";
 
     } catch (error) {
 
         console.error(error);
+        sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
 
         mensagem.textContent =
             "Não foi possível realizar o cadastro: " + error.message;
@@ -561,15 +549,37 @@ window.cadastrar = async function() {
         mensagem.style.color = "#ffaaaa";
 
     } finally {
-
         botao.disabled = false;
         botao.textContent = "CADASTRAR";
-
     }
-
 };
 
-/* ABRIR INVESTIGADORES */
+async function validarSenhaAdministrativa() {
+
+    const senha = sessionStorage.getItem(CHAVE_TEMPORARIA_ADMIN);
+
+    if (!senha) {
+        return "normal";
+    }
+
+    sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
+
+    const { data, error } = await supabase.rpc(
+        "claim_admin",
+        { p_password: senha }
+    );
+
+    if (error) {
+        console.error("Erro ao validar senha administrativa:", error);
+        return "erro";
+    }
+
+    if (data === true) {
+        return "admin";
+    }
+
+    return "incorreta";
+}
 
 window.abrirInvestigadores = async function() {
 
@@ -588,9 +598,7 @@ window.abrirInvestigadores = async function() {
             .select("username")
             .order("username", { ascending: true });
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         if (!data || data.length === 0) {
             mensagem.textContent = "Nenhum investigador registrado ainda.";
@@ -598,14 +606,10 @@ window.abrirInvestigadores = async function() {
         }
 
         data.forEach((investigador) => {
-
             const item = document.createElement("div");
-
             item.className = "investigador-item";
             item.textContent = investigador.username;
-
             lista.appendChild(item);
-
         });
 
         mensagem.textContent =
@@ -614,25 +618,15 @@ window.abrirInvestigadores = async function() {
                 : " investigadores registrados.");
 
     } catch (error) {
-
         console.error(error);
-
         mensagem.textContent =
             "Não foi possível carregar os investigadores. Tente novamente.";
-
     }
-
 };
-
-/* VOLTAR AO MENU */
 
 window.voltarMenu = function() {
-
     mostrarPagina("menu");
-
 };
-
-/* RETORNO DA CONFIRMAÇÃO */
 
 async function verificarConfirmacao() {
 
@@ -653,13 +647,24 @@ async function verificarConfirmacao() {
         );
 
         if (!error && data.session) {
+
+            const resultadoAdmin = await validarSenhaAdministrativa();
+
             mostrarPagina("menu");
+
+            if (resultadoAdmin === "admin") {
+                alert("Acesso administrativo ativado com sucesso!");
+            } else if (resultadoAdmin === "incorreta") {
+                alert("Cadastro confirmado! A senha administrativa estava incorreta. Sua conta terá acesso normal.");
+            } else if (resultadoAdmin === "erro") {
+                alert("Cadastro confirmado, mas não foi possível validar a senha administrativa.");
+            }
+
         } else {
+            sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
             mostrarPagina("login");
         }
-
     }
-
 }
 
 verificarConfirmacao();
@@ -668,6 +673,3 @@ verificarConfirmacao();
 
 </body>
 </html>
-
-
-
