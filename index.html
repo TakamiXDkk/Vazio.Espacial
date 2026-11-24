@@ -26,7 +26,6 @@ body {
     width: 100%;
     height: 100vh;
     background: #050510;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,7 +43,6 @@ body {
 #inicio button {
     position: relative;
     z-index: 1;
-
     padding: 18px 35px;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid white;
@@ -67,9 +65,7 @@ body {
     inset: 0;
     width: 100%;
     min-height: 100vh;
-
     background: #484848;
-
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -86,11 +82,9 @@ body {
     letter-spacing: 3px;
     text-align: center;
     white-space: nowrap;
-
     color: #a9823f;
     text-shadow: 1px 1px 1px #e0c17c,
                  2px 3px 3px #292014;
-
     transform: scaleY(1.25);
 }
 
@@ -115,10 +109,8 @@ body {
     width: 100%;
     height: 58px;
     padding: 15px;
-
     background: #555555;
     border: 1px solid #987538;
-
     color: white;
     font-size: 17px;
     outline: none;
@@ -130,6 +122,39 @@ body {
 
 .campos input:focus {
     border-color: #d0ad65;
+}
+
+/* BOTÃO DE CADASTRO */
+
+#botaoCadastro {
+    width: 100%;
+    height: 54px;
+    background: #a9823f;
+    border: 1px solid #d0ad65;
+    color: #17130c;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+#botaoCadastro:hover {
+    background: #c19b58;
+}
+
+#botaoCadastro:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* MENSAGEM */
+
+#mensagem {
+    width: min(360px, 90%);
+    color: white;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    min-height: 20px;
 }
 
 /* CELULAR */
@@ -168,17 +193,141 @@ body {
     <div class="linha"></div>
 
     <div class="campos">
-        <input type="text" placeholder="Username">
-        <input type="email" placeholder="E-mail">
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+            maxlength="30"
+            autocomplete="nickname"
+        >
+
+        <input
+            type="email"
+            id="email"
+            placeholder="E-mail"
+            autocomplete="email"
+        >
+
+        <button id="botaoCadastro" type="button" onclick="cadastrar()">
+            CADASTRAR
+        </button>
+
     </div>
+
+    <p id="mensagem"></p>
 
 </section>
 
-<script>
-function abrirLogin() {
+<script type="module">
+
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+/* CONEXÃO COM SUPABASE */
+
+const SUPABASE_URL = 'https://edbpmnsoolqfuxqzsguu.supabase.co';
+
+const SUPABASE_KEY = 'sb_publishable_jg8_p1uy4CjVPQQPJM95BQ_ORayHJPT';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ABRIR LOGIN */
+
+window.abrirLogin = function() {
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "flex";
+};
+
+/* CADASTRO */
+
+window.cadastrar = async function() {
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    const mensagem = document.getElementById("mensagem");
+    const botao = document.getElementById("botaoCadastro");
+
+    mensagem.style.color = "white";
+
+    if (!username || !email) {
+        mensagem.textContent = "Preencha o Username e o E-mail.";
+        return;
+    }
+
+    if (username.length < 3) {
+        mensagem.textContent = "O Username precisa ter pelo menos 3 caracteres.";
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        mensagem.textContent = "Digite um endereço de e-mail válido.";
+        return;
+    }
+
+    botao.disabled = true;
+    botao.textContent = "ENVIANDO...";
+    mensagem.textContent = "";
+
+    try {
+
+        const { error } = await supabase.auth.signInWithOtp({
+            email: email,
+
+            options: {
+                emailRedirectTo: window.location.origin + window.location.pathname,
+
+                data: {
+                    username: username
+                },
+
+                shouldCreateUser: true
+            }
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        mensagem.textContent =
+            "Enviamos um link de confirmação para seu e-mail. Confira sua caixa de entrada.";
+
+        mensagem.style.color = "#e5c98f";
+
+    } catch (error) {
+
+        console.error(error);
+
+        mensagem.textContent =
+            "Não foi possível realizar o cadastro: " + error.message;
+
+        mensagem.style.color = "#ffaaaa";
+
+    } finally {
+
+        botao.disabled = false;
+        botao.textContent = "CADASTRAR";
+
+    }
+};
+
+/* RETORNO APÓS CONFIRMAÇÃO */
+
+const { data: { session } } = await supabase.auth.getSession();
+
+if (session) {
+
+    document.getElementById("inicio").style.display = "none";
+    document.getElementById("login").style.display = "flex";
+
+    document.getElementById("mensagem").textContent =
+        "E-mail confirmado! Seu cadastro foi realizado.";
+
+    document.getElementById("mensagem").style.color = "#e5c98f";
+
 }
+
 </script>
 
 </body>
