@@ -65,12 +65,15 @@ body {
     inset: 0;
     width: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
     background: #484848;
+
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 65px;
-    padding: 25px;
+    gap: 35px;
+    padding: 30px 20px;
+    overflow-y: auto;
 }
 
 /* TÍTULO */
@@ -93,16 +96,18 @@ body {
 .linha {
     width: min(650px, 85%);
     height: 1px;
+    flex-shrink: 0;
     background: #a9823f;
 }
 
-/* CAMPOS */
+/* CAMPOS E BOTÃO */
 
 .campos {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 18px;
     width: min(360px, 90%);
+    flex-shrink: 0;
 }
 
 .campos input {
@@ -124,14 +129,17 @@ body {
     border-color: #d0ad65;
 }
 
-/* BOTÃO DE CADASTRO */
-
 #botaoCadastro {
+    display: block;
+    visibility: visible;
     width: 100%;
-    height: 54px;
+    min-height: 54px;
+    flex-shrink: 0;
+
     background: #a9823f;
     border: 1px solid #d0ad65;
     color: #17130c;
+
     font-size: 15px;
     letter-spacing: 2px;
     cursor: pointer;
@@ -161,8 +169,12 @@ body {
 
 @media (max-width: 600px) {
     .titulo {
-        font-size: 34px;
+        font-size: clamp(25px, 7vw, 34px);
         letter-spacing: 1px;
+    }
+
+    #login {
+        gap: 28px;
     }
 }
 </style>
@@ -209,7 +221,11 @@ body {
             autocomplete="email"
         >
 
-        <button id="botaoCadastro" type="button" onclick="cadastrar()">
+        <button
+            id="botaoCadastro"
+            type="button"
+            onclick="cadastrar()"
+        >
             CADASTRAR
         </button>
 
@@ -224,22 +240,16 @@ body {
 import { createClient } from
 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-/* CONEXÃO COM SUPABASE */
-
 const SUPABASE_URL = 'https://edbpmnsoolqfuxqzsguu.supabase.co';
 
 const SUPABASE_KEY = 'sb_publishable_jg8_p1uy4CjVPQQPJM95BQ_ORayHJPT';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ABRIR LOGIN */
-
 window.abrirLogin = function() {
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "flex";
 };
-
-/* CADASTRO */
 
 window.cadastrar = async function() {
 
@@ -286,9 +296,7 @@ window.cadastrar = async function() {
             }
         });
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         mensagem.textContent =
             "Enviamos um link de confirmação para seu e-mail. Confira sua caixa de entrada.";
@@ -312,8 +320,6 @@ window.cadastrar = async function() {
     }
 };
 
-/* RETORNO APÓS CONFIRMAÇÃO */
-
 const { data: { session } } = await supabase.auth.getSession();
 
 if (session) {
@@ -331,5 +337,7 @@ if (session) {
 </script>
 
 </body>
+</html>
+
 </html>
 
