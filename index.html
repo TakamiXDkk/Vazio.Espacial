@@ -308,7 +308,6 @@ body {
 
 #regras .botao-menu {
     width: min(300px, 85%);
-    min-height: 55px;
     flex-shrink: 0;
 }
 
@@ -345,13 +344,13 @@ body {
     }
 
     #regras {
-        padding: 12px;
+        padding: 15px 12px;
         gap: 12px;
     }
 
     #imagemRegras {
         max-width: 100%;
-        max-height: calc(100dvh - 85px);
+        max-height: calc(100dvh - 90px);
     }
 }
 </style>
@@ -423,6 +422,7 @@ body {
         </button>
 
         <button class="botao-menu"
+            type="button"
             onclick="abrirRegras()">
             REGRAS E INFORMAÇÕES
         </button>
@@ -470,7 +470,7 @@ body {
 
 </section>
 
-<!-- QUINTA PÁGINA - IMAGEM -->
+<!-- QUINTA PÁGINA - AGORA MOSTRA SOMENTE A IMAGEM -->
 
 <section id="regras">
 
@@ -556,9 +556,7 @@ window.mostrarAviso = function(texto) {
 /* ABRIR IMAGEM DAS REGRAS */
 
 window.abrirRegras = function() {
-
     mostrarPagina("regras");
-
 };
 
 /* CADASTRO */
