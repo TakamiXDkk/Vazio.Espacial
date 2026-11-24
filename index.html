@@ -76,7 +76,7 @@ body {
     overflow-y: auto;
 }
 
-/* TÍTULO */
+/* TÍTULO DO LOGIN */
 
 .titulo {
     font-family: Georgia, serif;
@@ -100,7 +100,7 @@ body {
     background: #a9823f;
 }
 
-/* CAMPOS E BOTÃO */
+/* CAMPOS */
 
 .campos {
     display: flex;
@@ -129,9 +129,10 @@ body {
     border-color: #d0ad65;
 }
 
+/* BOTÃO DE CADASTRO */
+
 #botaoCadastro {
     display: block;
-    visibility: visible;
     width: 100%;
     min-height: 54px;
     flex-shrink: 0;
@@ -165,6 +166,83 @@ body {
     min-height: 20px;
 }
 
+/* TERCEIRA PÁGINA - MENU */
+
+#menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    background: #484848;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 55px;
+    padding: 35px 20px;
+    overflow-y: auto;
+}
+
+/* TÍTULO DO MENU */
+
+.titulo-menu {
+    font-family: Georgia, serif;
+    font-size: clamp(35px, 6vw, 76px);
+    font-weight: normal;
+    letter-spacing: 3px;
+    text-align: center;
+    white-space: nowrap;
+
+    color: #a9823f;
+    text-shadow: 1px 1px 1px #e0c17c,
+                 2px 3px 3px #292014;
+
+    transform: scaleY(1.25);
+}
+
+/* BOTÕES DO MENU */
+
+.botoes-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    width: min(460px, 90%);
+}
+
+.botao-menu {
+    width: 100%;
+    min-height: 68px;
+
+    background: transparent;
+    border: 1px solid #a9823f;
+
+    color: #e0c17c;
+    font-size: 16px;
+    letter-spacing: 2px;
+
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.botao-menu:hover {
+    background: #a9823f;
+    color: #17130c;
+}
+
+/* AVISO DO MENU */
+
+#avisoMenu {
+    min-height: 22px;
+    color: #d0ad65;
+    font-size: 14px;
+    text-align: center;
+}
+
 /* CELULAR */
 
 @media (max-width: 600px) {
@@ -173,8 +251,21 @@ body {
         letter-spacing: 1px;
     }
 
+    .titulo-menu {
+        font-size: clamp(24px, 7vw, 40px);
+        letter-spacing: 1px;
+    }
+
     #login {
         gap: 28px;
+    }
+
+    #menu {
+        gap: 45px;
+    }
+
+    .botao-menu {
+        font-size: 13px;
     }
 }
 </style>
@@ -235,21 +326,93 @@ body {
 
 </section>
 
+<!-- TERCEIRA PÁGINA -->
+
+<section id="menu">
+
+    <div class="linha"></div>
+
+    <h1 class="titulo-menu">
+        𝔸ℕ𝕆𝕄𝔸𝕃𝕀𝔸 𝔼ℕℂ𝕆ℕ𝕋ℝ𝔸𝔻𝔸
+    </h1>
+
+    <div class="linha"></div>
+
+    <div class="botoes-menu">
+
+        <button
+            class="botao-menu"
+            onclick="mostrarAviso('A investigação ainda está sendo preparada.')"
+        >
+            INVESTIGAR ANOMALIA
+        </button>
+
+        <button
+            class="botao-menu"
+            onclick="mostrarAviso('As regras e informações serão disponibilizadas em breve.')"
+        >
+            REGRAS E INFORMAÇÕES
+        </button>
+
+        <button
+            class="botao-menu"
+            onclick="mostrarAviso('A lista de investigadores será disponibilizada em breve.')"
+        >
+            INVESTIGADORES REGISTRADOS
+        </button>
+
+    </div>
+
+    <p id="avisoMenu"></p>
+
+</section>
+
 <script type="module">
 
 import { createClient } from
 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const SUPABASE_URL = 'https://edbpmnsoolqfuxqzsguu.supabase.co';
+/* CONEXÃO COM SUPABASE */
 
-const SUPABASE_KEY = 'sb_publishable_jg8_p1uy4CjVPQQPJM95BQ_ORayHJPT';
+const SUPABASE_URL =
+'https://edbpmnsoolqfuxqzsguu.supabase.co';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY =
+'sb_publishable_jg8_p1uy4CjVPQQPJM95BQ_ORayHJPT';
+
+const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+/* CONTROLE DAS PÁGINAS */
+
+function mostrarPagina(pagina) {
+
+    document.getElementById("inicio").style.display = "none";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("menu").style.display = "none";
+
+    document.getElementById(pagina).style.display = "flex";
+}
 
 window.abrirLogin = function() {
-    document.getElementById("inicio").style.display = "none";
-    document.getElementById("login").style.display = "flex";
+    mostrarPagina("login");
 };
+
+/* ABRIR MENU APÓS AUTENTICAÇÃO */
+
+function abrirMenu() {
+    mostrarPagina("menu");
+}
+
+/* AVISOS DOS BOTÕES */
+
+window.mostrarAviso = function(texto) {
+    document.getElementById("avisoMenu").textContent = texto;
+};
+
+/* CADASTRO */
 
 window.cadastrar = async function() {
 
@@ -283,10 +446,12 @@ window.cadastrar = async function() {
     try {
 
         const { error } = await supabase.auth.signInWithOtp({
+
             email: email,
 
             options: {
-                emailRedirectTo: window.location.origin + window.location.pathname,
+                emailRedirectTo:
+                    window.location.origin + window.location.pathname,
 
                 data: {
                     username: username
@@ -294,9 +459,12 @@ window.cadastrar = async function() {
 
                 shouldCreateUser: true
             }
+
         });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         mensagem.textContent =
             "Enviamos um link de confirmação para seu e-mail. Confira sua caixa de entrada.";
@@ -320,24 +488,39 @@ window.cadastrar = async function() {
     }
 };
 
-const { data: { session } } = await supabase.auth.getSession();
+/* VERIFICAR SESSÃO */
 
-if (session) {
+async function verificarSessao() {
 
-    document.getElementById("inicio").style.display = "none";
-    document.getElementById("login").style.display = "flex";
+    const { data, error } = await supabase.auth.getSession();
 
-    document.getElementById("mensagem").textContent =
-        "E-mail confirmado! Seu cadastro foi realizado.";
+    if (error) {
+        console.error(error);
+        return;
+    }
 
-    document.getElementById("mensagem").style.color = "#e5c98f";
+    if (data.session) {
+        abrirMenu();
+    }
 
 }
+
+/* DETECTAR CONFIRMAÇÃO DO E-MAIL */
+
+supabase.auth.onAuthStateChange((event, session) => {
+
+    if (event === "SIGNED_IN" && session) {
+        abrirMenu();
+    }
+
+});
+
+/* VERIFICAÇÃO INICIAL */
+
+verificarSessao();
 
 </script>
 
 </body>
-</html>
-
 </html>
 
