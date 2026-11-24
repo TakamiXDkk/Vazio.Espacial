@@ -158,24 +158,6 @@ body {
     min-height: 20px;
 }
 
-/* BOTÕES DE VOLTAR */
-
-.botao-voltar {
-    width: min(300px, 85%);
-    min-height: 52px;
-    background: transparent;
-    border: 1px solid #a9823f;
-    color: #e0c17c;
-    font-size: 14px;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
-
-.botao-voltar:hover {
-    background: #a9823f;
-    color: #17130c;
-}
-
 /* TERCEIRA PÁGINA */
 
 #menu {
@@ -216,6 +198,7 @@ body {
 }
 
 .botao-menu {
+    display: block;
     width: 100%;
     min-height: 68px;
     background: transparent;
@@ -314,7 +297,10 @@ body {
     }
 
     #menu {
-        gap: 28px;
+        gap: 25px;
+        justify-content: flex-start;
+        padding-top: 45px;
+        padding-bottom: 35px;
     }
 
     .botao-menu {
@@ -403,17 +389,17 @@ body {
             INVESTIGADORES REGISTRADOS
         </button>
 
+        <!-- QUARTO BOTÃO, DENTRO DO MESMO BLOCO -->
+
+        <button class="botao-menu"
+            type="button"
+            onclick="voltarCadastro()">
+            VOLTAR AO CADASTRO
+        </button>
+
     </div>
 
     <p id="avisoMenu"></p>
-
-    <!-- BOTÃO NOVO -->
-
-    <button class="botao-voltar"
-        type="button"
-        onclick="voltarCadastro()">
-        VOLTAR AO CADASTRO
-    </button>
 
 </section>
 
@@ -435,7 +421,8 @@ body {
         Carregando investigadores...
     </p>
 
-    <button class="botao-voltar"
+    <button class="botao-menu"
+        style="width:min(300px,85%)"
         onclick="voltarMenu()">
         VOLTAR AO MENU
     </button>
@@ -490,11 +477,14 @@ window.abrirLogin = async function() {
     }
 };
 
-/* NOVO BOTÃO: VOLTAR AO CADASTRO */
+/* VOLTAR AO CADASTRO */
 
 window.voltarCadastro = function() {
+
     mostrarPagina("login");
+
     document.getElementById("avisoMenu").textContent = "";
+
 };
 
 /* AVISOS DO MENU */
@@ -588,6 +578,7 @@ window.cadastrar = async function() {
         botao.textContent = "CADASTRAR";
 
     }
+
 };
 
 /* VALIDAR SENHA ADMINISTRATIVA */
