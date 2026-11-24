@@ -16,10 +16,11 @@
         body {
             min-height: 100vh;
             background-color: #050510;
-            background-image: url("fundo.png");
+            background-image: url("./fundo.png");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
@@ -46,16 +47,50 @@
             font-size: 18px;
             line-height: 1.6;
         }
+
+        button {
+            margin-top: 30px;
+            padding: 16px 32px;
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 16px;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 20px white;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .conteudo {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 
 <body>
+
     <div class="conteudo">
         <h1>VAZIO ESPACIAL</h1>
+
         <p>O universo é muito maior do que imaginamos.</p>
         <p>E nem tudo que existe deveria ser encontrado.</p>
-        <p>Está funcionando!</p>
+
+        <button onclick="alert('Investigação iniciada.')">
+            PROCURAR ANOMALIA
+        </button>
     </div>
+
 </body>
 </html>
 
