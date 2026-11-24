@@ -127,13 +127,6 @@ body {
     background: #3e3e3e;
 }
 
-#botaoCadastro,
-.botao-voltar,
-.botao-menu {
-    cursor: pointer;
-    letter-spacing: 2px;
-}
-
 #botaoCadastro {
     display: block;
     width: 100%;
@@ -143,6 +136,8 @@ body {
     border: 1px solid #d0ad65;
     color: #17130c;
     font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
 }
 
 #botaoCadastro:hover {
@@ -154,20 +149,6 @@ body {
     cursor: wait;
 }
 
-.botao-voltar {
-    width: min(360px, 90%);
-    min-height: 50px;
-    background: transparent;
-    border: 1px solid #a9823f;
-    color: #e0c17c;
-    font-size: 14px;
-}
-
-.botao-voltar:hover {
-    background: #a9823f;
-    color: #17130c;
-}
-
 #mensagem {
     width: min(360px, 90%);
     color: white;
@@ -175,6 +156,24 @@ body {
     line-height: 1.5;
     text-align: center;
     min-height: 20px;
+}
+
+/* BOTÕES DE VOLTAR */
+
+.botao-voltar {
+    width: min(300px, 85%);
+    min-height: 52px;
+    background: transparent;
+    border: 1px solid #a9823f;
+    color: #e0c17c;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.botao-voltar:hover {
+    background: #a9823f;
+    color: #17130c;
 }
 
 /* TERCEIRA PÁGINA */
@@ -190,7 +189,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 55px;
+    gap: 35px;
     padding: 35px 20px;
     overflow-y: auto;
 }
@@ -223,6 +222,8 @@ body {
     border: 1px solid #a9823f;
     color: #e0c17c;
     font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
 
@@ -313,7 +314,7 @@ body {
     }
 
     #menu {
-        gap: 45px;
+        gap: 28px;
     }
 
     .botao-menu {
@@ -329,12 +330,17 @@ body {
 
 <body>
 
+<!-- PRIMEIRA PÁGINA -->
+
 <section id="inicio">
     <img src="./fundo.png" alt="Fundo">
+
     <button type="button" onclick="abrirLogin()">
         PROCURAR ANOMALIA
     </button>
 </section>
+
+<!-- SEGUNDA PÁGINA -->
 
 <section id="login">
 
@@ -366,12 +372,9 @@ body {
 
     <p id="mensagem"></p>
 
-    <button class="botao-voltar" type="button"
-        onclick="voltarInicio()">
-        VOLTAR
-    </button>
-
 </section>
+
+<!-- TERCEIRA PÁGINA -->
 
 <section id="menu">
 
@@ -404,7 +407,17 @@ body {
 
     <p id="avisoMenu"></p>
 
+    <!-- BOTÃO NOVO -->
+
+    <button class="botao-voltar"
+        type="button"
+        onclick="voltarCadastro()">
+        VOLTAR AO CADASTRO
+    </button>
+
 </section>
+
+<!-- QUARTA PÁGINA -->
 
 <section id="investigadores">
 
@@ -422,7 +435,8 @@ body {
         Carregando investigadores...
     </p>
 
-    <button class="botao-voltar" onclick="voltarMenu()">
+    <button class="botao-voltar"
+        onclick="voltarMenu()">
         VOLTAR AO MENU
     </button>
 
@@ -446,15 +460,22 @@ const supabase = createClient(
 
 const CHAVE_TEMPORARIA_ADMIN = "vazio_admin_pendente";
 
+/* NAVEGAÇÃO */
+
 function mostrarPagina(pagina) {
+
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("menu").style.display = "none";
     document.getElementById("investigadores").style.display = "none";
+
     document.getElementById(pagina).style.display = "flex";
 }
 
+/* ABRIR CADASTRO */
+
 window.abrirLogin = async function() {
+
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
@@ -469,14 +490,20 @@ window.abrirLogin = async function() {
     }
 };
 
-window.voltarInicio = function() {
-    mostrarPagina("inicio");
-    document.getElementById("mensagem").textContent = "";
+/* NOVO BOTÃO: VOLTAR AO CADASTRO */
+
+window.voltarCadastro = function() {
+    mostrarPagina("login");
+    document.getElementById("avisoMenu").textContent = "";
 };
+
+/* AVISOS DO MENU */
 
 window.mostrarAviso = function(texto) {
     document.getElementById("avisoMenu").textContent = texto;
 };
+
+/* CADASTRO */
 
 window.cadastrar = async function() {
 
@@ -517,15 +544,20 @@ window.cadastrar = async function() {
         }
 
         const { error } = await supabase.auth.signInWithOtp({
+
             email: email,
+
             options: {
                 emailRedirectTo:
                     window.location.origin + window.location.pathname,
+
                 data: {
                     username: username
                 },
+
                 shouldCreateUser: true
             }
+
         });
 
         if (error) {
@@ -536,11 +568,13 @@ window.cadastrar = async function() {
             "Enviamos um link de confirmação para seu e-mail. Abra o link neste mesmo navegador para concluir o cadastro.";
 
         mensagem.style.color = "#e5c98f";
+
         document.getElementById("senhaAdmin").value = "";
 
     } catch (error) {
 
         console.error(error);
+
         sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
 
         mensagem.textContent =
@@ -549,10 +583,14 @@ window.cadastrar = async function() {
         mensagem.style.color = "#ffaaaa";
 
     } finally {
+
         botao.disabled = false;
         botao.textContent = "CADASTRAR";
+
     }
 };
+
+/* VALIDAR SENHA ADMINISTRATIVA */
 
 async function validarSenhaAdministrativa() {
 
@@ -581,6 +619,8 @@ async function validarSenhaAdministrativa() {
     return "incorreta";
 }
 
+/* ABRIR INVESTIGADORES */
+
 window.abrirInvestigadores = async function() {
 
     mostrarPagina("investigadores");
@@ -598,7 +638,9 @@ window.abrirInvestigadores = async function() {
             .select("username")
             .order("username", { ascending: true });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         if (!data || data.length === 0) {
             mensagem.textContent = "Nenhum investigador registrado ainda.";
@@ -606,10 +648,14 @@ window.abrirInvestigadores = async function() {
         }
 
         data.forEach((investigador) => {
+
             const item = document.createElement("div");
+
             item.className = "investigador-item";
             item.textContent = investigador.username;
+
             lista.appendChild(item);
+
         });
 
         mensagem.textContent =
@@ -618,15 +664,22 @@ window.abrirInvestigadores = async function() {
                 : " investigadores registrados.");
 
     } catch (error) {
+
         console.error(error);
+
         mensagem.textContent =
             "Não foi possível carregar os investigadores. Tente novamente.";
+
     }
 };
+
+/* VOLTAR AO MENU */
 
 window.voltarMenu = function() {
     mostrarPagina("menu");
 };
+
+/* RETORNO DA CONFIRMAÇÃO */
 
 async function verificarConfirmacao() {
 
@@ -653,18 +706,28 @@ async function verificarConfirmacao() {
             mostrarPagina("menu");
 
             if (resultadoAdmin === "admin") {
+
                 alert("Acesso administrativo ativado com sucesso!");
+
             } else if (resultadoAdmin === "incorreta") {
+
                 alert("Cadastro confirmado! A senha administrativa estava incorreta. Sua conta terá acesso normal.");
+
             } else if (resultadoAdmin === "erro") {
+
                 alert("Cadastro confirmado, mas não foi possível validar a senha administrativa.");
+
             }
 
         } else {
+
             sessionStorage.removeItem(CHAVE_TEMPORARIA_ADMIN);
             mostrarPagina("login");
+
         }
+
     }
+
 }
 
 verificarConfirmacao();
