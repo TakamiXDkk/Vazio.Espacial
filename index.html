@@ -216,6 +216,80 @@ body {
     text-align: center;
 }
 
+/* QUARTA PÁGINA - INVESTIGADORES */
+
+#investigadores {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #484848;
+    flex-direction: column;
+    align-items: center;
+    padding: 35px 20px;
+    gap: 30px;
+    overflow-y: auto;
+}
+
+.titulo-investigadores {
+    font-family: Georgia, serif;
+    font-size: clamp(27px, 5vw, 58px);
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-align: center;
+    color: #a9823f;
+    text-shadow: 1px 1px 1px #e0c17c,
+                 2px 3px 3px #292014;
+    margin-top: 15px;
+}
+
+#listaInvestigadores {
+    width: min(600px, 90%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.investigador-item {
+    width: 100%;
+    min-height: 55px;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border: 1px solid #a9823f;
+    color: #e0c17c;
+    background: rgba(0, 0, 0, 0.12);
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+#mensagemInvestigadores {
+    color: #d0ad65;
+    font-size: 14px;
+    text-align: center;
+    min-height: 22px;
+}
+
+.botao-voltar {
+    width: min(300px, 85%);
+    min-height: 55px;
+    margin-top: 15px;
+    background: transparent;
+    border: 1px solid #a9823f;
+    color: #e0c17c;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.botao-voltar:hover {
+    background: #a9823f;
+    color: #17130c;
+}
+
 /* CELULAR */
 
 @media (max-width: 600px) {
@@ -240,6 +314,10 @@ body {
     .botao-menu {
         font-size: 13px;
     }
+
+    .titulo-investigadores {
+        font-size: clamp(23px, 6vw, 34px);
+    }
 }
 </style>
 </head>
@@ -249,11 +327,13 @@ body {
 <!-- PRIMEIRA PÁGINA -->
 
 <section id="inicio">
+
     <img src="./fundo.png" alt="Fundo">
 
     <button type="button" onclick="abrirLogin()">
         PROCURAR ANOMALIA
     </button>
+
 </section>
 
 <!-- SEGUNDA PÁGINA -->
@@ -322,13 +402,37 @@ body {
         </button>
 
         <button class="botao-menu"
-            onclick="mostrarAviso('A lista de investigadores será disponibilizada em breve.')">
+            onclick="abrirInvestigadores()">
             INVESTIGADORES REGISTRADOS
         </button>
 
     </div>
 
     <p id="avisoMenu"></p>
+
+</section>
+
+<!-- QUARTA PÁGINA -->
+
+<section id="investigadores">
+
+    <div class="linha"></div>
+
+    <h1 class="titulo-investigadores">
+        INVESTIGADORES REGISTRADOS
+    </h1>
+
+    <div class="linha"></div>
+
+    <div id="listaInvestigadores"></div>
+
+    <p id="mensagemInvestigadores">
+        Carregando investigadores...
+    </p>
+
+    <button class="botao-voltar" onclick="voltarMenu()">
+        VOLTAR AO MENU
+    </button>
 
 </section>
 
@@ -355,6 +459,7 @@ function mostrarPagina(pagina) {
     document.getElementById("inicio").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("menu").style.display = "none";
+    document.getElementById("investigadores").style.display = "none";
 
     document.getElementById(pagina).style.display = "flex";
 
@@ -464,6 +569,69 @@ window.cadastrar = async function() {
 
 };
 
+/* ABRIR INVESTIGADORES */
+
+window.abrirInvestigadores = async function() {
+
+    mostrarPagina("investigadores");
+
+    const lista = document.getElementById("listaInvestigadores");
+    const mensagem = document.getElementById("mensagemInvestigadores");
+
+    lista.innerHTML = "";
+    mensagem.textContent = "Carregando investigadores...";
+
+    try {
+
+        const { data, error } = await supabase
+            .from("investigadores_publicos")
+            .select("username")
+            .order("username", { ascending: true });
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.length === 0) {
+            mensagem.textContent = "Nenhum investigador registrado ainda.";
+            return;
+        }
+
+        data.forEach((investigador) => {
+
+            const item = document.createElement("div");
+
+            item.className = "investigador-item";
+            item.textContent = investigador.username;
+
+            lista.appendChild(item);
+
+        });
+
+        mensagem.textContent =
+            data.length + (data.length === 1
+                ? " investigador registrado."
+                : " investigadores registrados.");
+
+    } catch (error) {
+
+        console.error(error);
+
+        mensagem.textContent =
+            "Não foi possível carregar os investigadores. Tente novamente.";
+
+    }
+
+};
+
+/* VOLTAR AO MENU */
+
+window.voltarMenu = function() {
+
+    mostrarPagina("menu");
+
+};
+
 /* RETORNO DA CONFIRMAÇÃO */
 
 async function verificarConfirmacao() {
@@ -473,12 +641,6 @@ async function verificarConfirmacao() {
     const veioDeConfirmacao =
         parametros.has("code") ||
         window.location.hash.includes("access_token=");
-
-    /*
-       Espera o Supabase processar o link.
-       Só abre o menu se esta visita veio
-       diretamente da confirmação do e-mail.
-    */
 
     const { data, error } = await supabase.auth.getSession();
 
@@ -499,12 +661,6 @@ async function verificarConfirmacao() {
     }
 
 }
-
-/*
-   IMPORTANTE:
-   Não existe redirecionamento automático
-   por sessão ativa ao abrir o site.
-*/
 
 verificarConfirmacao();
 
